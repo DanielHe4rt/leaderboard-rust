@@ -6,3 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+actix-web = "4.5.1"
+charybdis = "0.3.0"
+charybdis_macros = "0.3.0"
+dotenvy = "0.15.7"
+scylla = { version = "0.12.0", features = ["time", "chrono"] }
+serde = { version = "1.0.196", features = ["derive"] }
