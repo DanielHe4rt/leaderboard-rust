@@ -1,26 +1,27 @@
 use std::sync::Arc;
 use std::time::Duration;
+
 use actix_web::{App, HttpServer};
 use actix_web::web::Data;
 use dotenvy::dotenv;
 use scylla::{CachingSession, Session, SessionBuilder};
 use serde::Serialize;
-use crate::http::controllers::user_controller::echo;
+
+use crate::http::controllers::submissions_controller::post_submission;
 
 mod models;
 mod http;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // Initialize the logger
-
     dotenv().expect(".env file not found");
 
     let app_data = AppState::new().await;
+
     HttpServer::new(move || {
         App::new()
             .app_data(Data::new(app_data.clone()))
-            .service(echo)
+            .service(post_submission)
     })
         .bind(("127.0.0.1", 8000))?
         .run()
@@ -54,6 +55,8 @@ impl AppState {
             .build()
             .await
             .expect("Connection Refused. Check your credentials and your IP linked on the ScyllaDB Cloud.");
+
+        session.use_keyspace("leaderboard", false).await.expect("Keyspace not found");
 
         AppState {
             config: Config {
