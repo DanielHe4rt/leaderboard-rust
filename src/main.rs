@@ -7,7 +7,7 @@ use dotenvy::dotenv;
 use scylla::{CachingSession, Session, SessionBuilder};
 use serde::Serialize;
 
-use crate::http::controllers::submissions_controller::post_submission;
+use crate::http::controllers::submissions_controller::{get_submission, post_submission};
 
 mod models;
 mod http;
@@ -22,6 +22,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(Data::new(app_data.clone()))
             .service(post_submission)
+            .service(get_submission)
     })
         .bind(("127.0.0.1", 8000))?
         .run()
@@ -36,7 +37,7 @@ struct Config {
 
 #[derive(Clone, Debug)]
 pub struct AppState {
-    pub config: Config,
+    config: Config,
     pub database: Arc<CachingSession>
 }
 

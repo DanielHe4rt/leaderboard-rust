@@ -18,14 +18,28 @@ pub struct SubmissionDTO {
 #[derive(Serialize)]
 pub struct SubmissionResponse {
     pub message: String,
-    pub submission: Submission,
+    pub submission: Option<Submission>,
 }
 
 impl SubmissionResponse {
-    pub fn success(submission: Submission) -> Self {
+    pub fn created(submission: Submission) -> Self {
         SubmissionResponse {
             message: "Submission created successfully".to_string(),
-            submission
+            submission: Some(submission)
+        }
+    }
+
+    pub fn found(submission: Submission) -> Self {
+        SubmissionResponse {
+            message: "Submission found.".to_string(),
+            submission: Some(submission)
+        }
+    }
+
+    pub fn not_found() -> Self {
+        SubmissionResponse {
+            message: "Submission not found.".to_string(),
+            submission: None
         }
     }
 }
