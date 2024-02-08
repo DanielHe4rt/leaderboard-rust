@@ -22,7 +22,7 @@ async fn get_submission(
         .await;
 
     let response = match submission {
-        Ok(submission) => HttpResponse::Ok().json(json!(SubmissionResponse::found(submission.clone()))),
+        Ok(submission) => HttpResponse::Ok().json(json!(SubmissionResponse::found(submission))),
         Err(_) => HttpResponse::NotFound().json(json!(SubmissionResponse::not_found())),
     };
 
@@ -38,13 +38,13 @@ async fn post_submission(
 
     let response = match validated {
         Ok(_) => {
-            Leaderboard::from_request(&payload)
-                .await
-                .insert(&data.database)
-                .await?;
 
-            let submission = Submission::from_request(&payload).await;
-            let _ = submission.insert(&data.database).await;
+            let leaderboard = Leaderboard::from_request(&payload);
+            leaderboard.insert(&data.database).await?;
+
+            let submission = Submission::from_request(&payload);
+            submission.insert(&data.database).await?;
+
             HttpResponse::Ok().json(json!(SubmissionResponse::created(submission)))
         }
         Err(err) => HttpResponse::BadRequest().json(json!(err)),

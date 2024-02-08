@@ -1,5 +1,3 @@
-use actix_web::web;
-use charybdis::callbacks::Callbacks;
 use charybdis::types::{Frozen, Int, Set, Text, Timestamp, Uuid};
 use charybdis_macros::charybdis_model;
 use serde::{Deserialize, Serialize};
@@ -29,7 +27,7 @@ pub struct Leaderboard {
     pub played_at: Timestamp,
 }
 impl Leaderboard {
-    pub async fn from_request(payload: &web::Json<SubmissionDTO>) -> Self {
+    pub fn from_request(payload: &SubmissionDTO) -> Self {
         Leaderboard {
             id: Uuid::new_v4(),
             song_id: payload.song_id.to_string(),
