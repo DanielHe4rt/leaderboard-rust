@@ -3,7 +3,7 @@ use charybdis_macros::charybdis_model;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::http::requests::submission::SubmissionDTO;
+use crate::http::requests::submission_request::SubmissionDTO;
 
 #[charybdis_model(
 table_name = submissions,

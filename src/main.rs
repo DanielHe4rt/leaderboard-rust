@@ -2,6 +2,7 @@ use actix_web::{App, HttpServer};
 use actix_web::web::Data;
 
 use crate::app::AppState;
+use crate::http::controllers::leaderboard_controller::get_leaderboard;
 use crate::http::controllers::submissions_controller::{get_submission, post_submission};
 
 mod models;
@@ -20,6 +21,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(app_data.clone()))
             .service(post_submission)
             .service(get_submission)
+            .service(get_leaderboard)
     })
         .bind(("127.0.0.1", 8000))?
         .run()

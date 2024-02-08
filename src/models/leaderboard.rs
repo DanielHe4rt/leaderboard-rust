@@ -3,7 +3,7 @@ use charybdis_macros::charybdis_model;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::http::requests::submission::SubmissionDTO;
+use crate::http::requests::submission_request::SubmissionDTO;
 
 #[charybdis_model(
     table_name = song_leaderboard,
@@ -15,7 +15,7 @@ use crate::http::requests::submission::SubmissionDTO;
       CLUSTERING ORDER BY (score DESC, player_id ASC)
     ",
 )]
-#[derive(Serialize, Deserialize, Default, Clone, Validate)]
+#[derive(Serialize, Deserialize, Default, Clone, Validate, Debug)]
 pub struct Leaderboard {
     pub id: Uuid,
     pub song_id: Text,
@@ -32,7 +32,7 @@ impl Leaderboard {
             id: Uuid::new_v4(),
             song_id: payload.song_id.to_string(),
             player_id: payload.player_id.to_string(),
-            difficulty: payload.player_id.to_string(),
+            difficulty: payload.difficulty.to_string(),
             instrument: payload.instrument.to_string(),
             modifiers: payload.modifiers.to_owned(),
             score: payload.score.to_owned(),

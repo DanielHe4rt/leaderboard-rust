@@ -6,7 +6,7 @@ use validator::Validate;
 
 use crate::AppState;
 use crate::http::FuckThatError;
-use crate::http::requests::submission::{SubmissionDTO, SubmissionResponse};
+use crate::http::requests::submission_request::{SubmissionDTO, SubmissionResponse};
 use crate::models::leaderboard::Leaderboard;
 use crate::models::submission::Submission;
 
@@ -19,14 +19,9 @@ async fn get_submission(
     let submission = Submission { id: id.into_inner(), ..Default::default() };
     let submission = submission
         .find_by_primary_key(&data.database)
-        .await;
+        .await?;
 
-    let response = match submission {
-        Ok(submission) => HttpResponse::Ok().json(json!(SubmissionResponse::found(submission))),
-        Err(_) => HttpResponse::NotFound().json(json!(SubmissionResponse::not_found())),
-    };
-
-    Ok(response)
+    Ok(HttpResponse::Ok().json(json!(SubmissionResponse::found(submission))))
 }
 
 #[post("/submissions")]
