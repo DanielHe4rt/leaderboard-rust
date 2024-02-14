@@ -6,14 +6,14 @@ use validator::Validate;
 use crate::http::requests::submission_request::SubmissionDTO;
 
 #[charybdis_model(
-    table_name = song_leaderboard,
-    partition_keys = [song_id, modifiers, difficulty, instrument],
-    clustering_keys = [score, player_id],
-    global_secondary_indexes = [],
-    local_secondary_indexes = [],
-    table_options = "
-      CLUSTERING ORDER BY (score DESC, player_id ASC)
-    ",
+table_name = song_leaderboard,
+partition_keys = [song_id, modifiers, difficulty, instrument],
+clustering_keys = [player_id, score],
+global_secondary_indexes = [],
+local_secondary_indexes = [],
+table_options = "
+  CLUSTERING ORDER BY (player_id ASC, score DESC)
+",
 )]
 #[derive(Serialize, Deserialize, Default, Clone, Validate, Debug)]
 pub struct Leaderboard {
@@ -26,6 +26,7 @@ pub struct Leaderboard {
     pub instrument: Text,
     pub played_at: Timestamp,
 }
+
 impl Leaderboard {
     pub fn from_request(payload: &SubmissionDTO) -> Self {
         Leaderboard {

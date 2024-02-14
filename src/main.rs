@@ -9,11 +9,10 @@ mod models;
 mod http;
 mod config;
 mod app;
+mod repositories;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
-
     let app_data = AppState::new().await;
 
     HttpServer::new(move || {

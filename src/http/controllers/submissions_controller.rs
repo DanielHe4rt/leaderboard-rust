@@ -1,25 +1,22 @@
 use actix_web::{get, HttpResponse, post, Responder, Result, web};
-use charybdis::operations::{Find, Insert};
+use charybdis::operations::Insert;
 use charybdis::types::Uuid;
 use serde_json::json;
 use validator::Validate;
 
 use crate::AppState;
-use crate::http::FuckThatError;
 use crate::http::requests::submission_request::{SubmissionDTO, SubmissionResponse};
-use crate::models::leaderboard::Leaderboard;
-use crate::models::submission::Submission;
-
+use crate::http::SomeError;
+use crate::repositories::leaderboard_repository::LeaderboardRepository;
+use crate::repositories::submission_repository::SubmissionRepository;
 
 #[get("/submissions/{id}")]
 async fn get_submission(
     data: web::Data<AppState>,
     id: web::Path<Uuid>,
-) -> Result<impl Responder, FuckThatError> {
-    let submission = Submission { id: id.into_inner(), ..Default::default() };
-    let submission = submission
-        .find_by_primary_key(&data.database)
-        .await?;
+) -> Result<impl Responder, SomeError> {
+    let submission_repository = SubmissionRepository::new(data.database.clone());
+    let submission = submission_repository.find_by_id(id.to_owned()).await?;
 
     Ok(HttpResponse::Ok().json(json!(SubmissionResponse::found(submission))))
 }
@@ -28,17 +25,16 @@ async fn get_submission(
 async fn post_submission(
     data: web::Data<AppState>,
     payload: web::Json<SubmissionDTO>,
-) -> Result<impl Responder, FuckThatError> {
+) -> Result<impl Responder, SomeError> {
     let validated = payload.validate();
+    let leaderboard_repository = LeaderboardRepository::new(data.database.clone());
+    let submission_repository = SubmissionRepository::new(data.database.clone());
 
     let response = match validated {
         Ok(_) => {
-
-            let leaderboard = Leaderboard::from_request(&payload);
-            leaderboard.insert(&data.database).await?;
-
-            let submission = Submission::from_request(&payload);
-            submission.insert(&data.database).await?;
+            let submission = submission_repository.insert(&payload).await?;
+            leaderboard_repository.insert(&payload).await?;
+            leaderboard_repository.update_score(&payload).await?;
 
             HttpResponse::Ok().json(json!(SubmissionResponse::created(submission)))
         }

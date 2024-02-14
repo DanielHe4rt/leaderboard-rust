@@ -1,6 +1,5 @@
-use charybdis::types::{Frozen, Set, Text};
-use serde::{Deserialize, Serialize};
-
+use charybdis::types::Text;
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct LeaderboardRequest {

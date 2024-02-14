@@ -8,15 +8,15 @@ pub mod requests;
 
 
 #[derive(Error, Debug)]
-pub enum FuckThatError {
+pub enum SomeError {
     #[error("Charybdis error: {0}")]
     CharybdisError(#[from] CharybdisError),
 }
 
-impl ResponseError for FuckThatError {
+impl ResponseError for SomeError {
     fn error_response(&self) -> HttpResponse {
         match self {
-            FuckThatError::CharybdisError(e) => match e {
+            SomeError::CharybdisError(e) => match e {
                 CharybdisError::NotFoundError(e) => HttpResponse::NotFound().json(json!({
                     "status": 404,
                     "message": e.to_string()

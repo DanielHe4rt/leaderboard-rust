@@ -12,10 +12,10 @@ clustering_keys = [played_at],
 global_secondary_indexes = [],
 local_secondary_indexes = [],
 table_options = "
-      CLUSTERING ORDER BY (played_at DESC)
-    ",
+  CLUSTERING ORDER BY (played_at DESC)
+",
 )]
-#[derive(Serialize, Deserialize, Default, Clone, Validate)]
+#[derive(Serialize, Deserialize, Default, Clone, Validate, Debug)]
 pub struct Submission {
     pub id: Uuid,
     pub song_id: Text,
