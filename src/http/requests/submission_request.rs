@@ -14,7 +14,6 @@ pub struct SubmissionDTO {
     pub instrument: Text,
 }
 
-
 #[derive(Serialize)]
 pub struct SubmissionResponse {
     pub message: String,

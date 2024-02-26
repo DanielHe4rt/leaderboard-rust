@@ -1,28 +1,26 @@
 use actix_web::{App, HttpServer};
 use actix_web::web::Data;
 
-use crate::app::AppState;
-use crate::http::controllers::leaderboard_controller::get_leaderboard;
-use crate::http::controllers::submissions_controller::{get_submission, post_submission};
+use crate::config::app::AppState;
 
 mod models;
 mod http;
+
 mod config;
-mod app;
+
 mod repositories;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let app_data = AppState::new().await;
 
+    println!("Web Server Online!");
+    println!("Listening on http://{}:{}", app_data.config.app.url, app_data.config.app.port);
     HttpServer::new(move || {
         App::new()
-            .app_data(Data::new(app_data.clone()))
-            .service(post_submission)
-            .service(get_submission)
-            .service(get_leaderboard)
-    })
-        .bind(("127.0.0.1", 8000))?
-        .run()
-        .await
+            .app_data(Data::new(AppState::new()))
+    }).bind((
+        app_data.config.app.url,
+        app_data.config.app.port.parse::<u16>().unwrap()
+    ))?.run().await
 }

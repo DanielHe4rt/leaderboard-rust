@@ -1,7 +1,7 @@
+use charybdis::macros::charybdis_model;
 use charybdis::types::{Frozen, Int, Set, Text, Timestamp, Uuid};
-use charybdis_macros::charybdis_model;
 use serde::{Deserialize, Serialize};
-use validator::Validate;
+
 
 use crate::http::requests::submission_request::SubmissionDTO;
 
@@ -15,7 +15,7 @@ table_options = "
   CLUSTERING ORDER BY (played_at DESC)
 ",
 )]
-#[derive(Serialize, Deserialize, Default, Clone, Validate, Debug)]
+#[derive(Serialize, Deserialize, Default, Clone, Debug)]
 pub struct Submission {
     pub id: Uuid,
     pub song_id: Text,
@@ -33,7 +33,7 @@ impl Submission {
             id: Uuid::new_v4(),
             song_id: payload.song_id.to_string(),
             player_id: payload.player_id.to_string(),
-            difficulty: payload.player_id.to_string(),
+            difficulty: payload.difficulty.to_string(),
             instrument: payload.instrument.to_string(),
             modifiers: payload.modifiers.to_owned(),
             score: payload.score.to_owned(),

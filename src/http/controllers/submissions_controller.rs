@@ -3,8 +3,8 @@ use charybdis::operations::Insert;
 use charybdis::types::Uuid;
 use serde_json::json;
 use validator::Validate;
+use crate::config::app::AppState;
 
-use crate::AppState;
 use crate::http::requests::submission_request::{SubmissionDTO, SubmissionResponse};
 use crate::http::SomeError;
 use crate::repositories::leaderboard_repository::LeaderboardRepository;

@@ -24,7 +24,7 @@ impl LeaderboardRepository {
 
     pub async fn insert(&self, payload: &SubmissionDTO) -> actix_web::Result<(), SomeError> {
         let leaderboard = Leaderboard::from_request(&payload);
-        leaderboard.insert(&self.db).await?;
+        leaderboard.insert().execute(&self.db).await?;
 
         Ok(())
     }
@@ -46,7 +46,7 @@ impl LeaderboardRepository {
         Ok(())
     }
 
-    pub async fn get_leaderboard(&self, song_id: Text, payload: LeaderboardRequest) -> actix_web::Result<(CharybdisModelStream<Leaderboard>), SomeError> {
+    pub async fn get_leaderboard(&self, song_id: Text, payload: LeaderboardRequest) -> actix_web::Result<CharybdisModelStream<Leaderboard>, SomeError> {
         let mut modifiers = Set::new();
         modifiers.insert(String::from("no-modifiers"));
 
@@ -58,7 +58,7 @@ impl LeaderboardRepository {
             ..Default::default()
         };
 
-        let leaderboard = leaderboard.find_by_partition_key(&self.db).await?;
+        let leaderboard = leaderboard.find_by_partition_key().execute(&self.db).await?;
 
         Ok(leaderboard)
     }

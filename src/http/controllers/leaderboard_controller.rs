@@ -2,7 +2,7 @@ use actix_web::{get, HttpResponse, Responder, web};
 use charybdis::types::Text;
 use serde_json::json;
 
-use crate::app::AppState;
+use crate::config::app::AppState;
 use crate::http::requests::leaderboard_request::LeaderboardRequest;
 use crate::http::SomeError;
 use crate::repositories::leaderboard_repository::LeaderboardRepository;
