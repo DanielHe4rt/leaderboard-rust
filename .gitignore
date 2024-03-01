@@ -1,1 +1,4 @@
 /target
+.env
+current_schema.json
+.idea
